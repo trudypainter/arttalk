@@ -2,11 +2,13 @@ import { type NextPage } from "next";
 import React, { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import TopFeedback from "~/components/TopFeedback";
+import Feedback from "~/components/Feedback";
 import { FIRST_FEEDBACK } from "~/constants/constant";
 import CanvasWithCircle from "~/components/CanvasWithMousePos";
 
 const Home: NextPage = () => {
+  const [feedback, setFeedback] = useState(FIRST_FEEDBACK);
+
   return (
     <>
       <Head>
@@ -20,21 +22,21 @@ const Home: NextPage = () => {
           <div className="text-3xl font-bold">Art Talk</div>
           <div className="relative border-2 border-black">
             <div className="absolute left-0 top-0 h-full w-full ">
-              <CanvasWithCircle />
+              <CanvasWithCircle setFeedback={setFeedback} feedback={feedback} />
             </div>
             <img
               className=" m-auto p-8"
               style={{ height: "calc(100vh - 200px)" }}
-              src="https://nrs.harvard.edu/urn-3:HUAM:INV155627_dynmc?width=3000&height=3000"
+              src="https://nrs.harvard.edu/urn-3:HUAM:76465_dynmc?width=3000&height=3000"
             ></img>
           </div>
           <div>
-            <div className="text-xl">Construct III-C</div>
-            <div>Barbara Kasten, 1980</div>
+            <div className="text-xl">The Road in the Forest</div>
+            <div className="">Hilaire-Germain-Edgar Degas, 1890</div>
           </div>
         </div>
         <div className="w-4/12 max-w-[500px] pt-11">
-          <TopFeedback feedback={FIRST_FEEDBACK} />
+          <Feedback feedback={feedback} />
         </div>
       </main>
     </>

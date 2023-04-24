@@ -2,13 +2,29 @@ import { prisma } from "~/server/db";
 import { NextApiRequest, NextApiResponse } from "next";
 import { comma } from "postcss/lib/list";
 
+export type Comment = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  xPercentage: number;
+  yPercentage: number;
+  body: string;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  let { x, y, body, width, height, xPercentage, yPercentage } = JSON.parse(
-    req.body
-  ).comment;
+  const reqBody: Comment = JSON.parse(req.body).comment;
+
+  const x: number = reqBody.x;
+  const y: number = reqBody.y;
+  const width: number = reqBody.width;
+  const height: number = reqBody.height;
+  const xPercentage: number = reqBody.xPercentage;
+  const yPercentage: number = reqBody.yPercentage;
+  const body: string = reqBody.body;
 
   await prisma.comment
     .create({

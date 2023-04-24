@@ -13,7 +13,7 @@ export default function Feedback({
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const [output, setOutput] = useState<string>("");
+  const [output, setOutput] = useState("");
   const [isListening, setIsListening] = useState<boolean>(true);
   const [userHasSpoken, setUserHasSpoken] = useState<boolean>(false);
 

@@ -1,6 +1,6 @@
 const { Writable } = require("stream");
 
-export class AudioFeedBack {
+class AudioFeedBack {
   finalResult = "";
   encoding = "LINEAR16";
   sampleRateHertz = 16000;
@@ -84,3 +84,6 @@ export class AudioFeedBack {
     }
   };
 }
+
+let af = new AudioFeedBack();
+process.on("change", () => console.log(af.finalResult));

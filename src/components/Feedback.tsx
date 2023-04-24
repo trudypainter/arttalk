@@ -1,6 +1,6 @@
 import { FeedbackType, THIRD_FEEDBACK } from "~/constants/constant";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type TopFeedbackProps = {
   feedback: FeedbackType;
@@ -13,6 +13,9 @@ export default function Feedback({
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
+  const [output, setOutput] = useState<string>("");
+  const [isListening, setIsListening] = useState<boolean>(false);
+
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
   };
@@ -24,6 +27,36 @@ export default function Feedback({
       createComment(inputValue);
     }
   };
+
+  useEffect(() => {
+    const recognition = new (window as any).webkitSpeechRecognition();
+
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: any) => {
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          setOutput(
+            (prevOutput) => prevOutput + event.results[i][0].transcript
+          );
+        }
+      }
+    };
+
+    if (isListening) {
+      recognition.start();
+      recognition.onend = () => recognition.start();
+    } else {
+      recognition.stop();
+      recognition.onend = () => {};
+    }
+
+    return () => {
+      recognition.stop();
+      recognition.onend = () => {};
+    };
+  }, [isListening]);
 
   return (
     <>

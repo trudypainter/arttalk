@@ -5,8 +5,6 @@ import Link from "next/link";
 import Feedback from "~/components/Feedback";
 import { COMPLETED_FEEDBACK, FIRST_FEEDBACK } from "~/constants/constant";
 import CanvasWithCircle from "~/components/CanvasWithMousePos";
-import HandDetectionDemo from "~/components/HandDetectionDemo";
-import HandPose from "~/components/HandPose";
 import { Dimensions } from "~/constants/constant";
 import CanvasWithGuesture from "~/components/CanvasWithGuesture";
 
@@ -51,16 +49,9 @@ const Home: NextPage = () => {
           <div className="text-3xl font-bold">Art Talk</div>
           <div className="relative border-2 border-black">
             <div className="absolute left-0 top-0 h-full w-full ">
-<<<<<<< HEAD
-              <CanvasWithCircle
-                setFeedback={setFeedback}
-                feedback={feedback}
-                setCoordDimensions={setDimensions}
-=======
               <CanvasWithGuesture
                 setFeedback={setFeedback}
                 feedback={feedback}
->>>>>>> f5aa1cf (adds guesture)
               />
             </div>
             <img

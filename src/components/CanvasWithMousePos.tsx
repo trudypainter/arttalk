@@ -7,7 +7,6 @@ import {
   SECOND_FEEDBACK,
   THIRD_FEEDBACK,
 } from "~/constants/constant";
-import { Hands } from "@mediapipe/hands";
 
 interface CanvasWithCircleProps {
   setFeedback: (feedback: FeedbackType) => void;

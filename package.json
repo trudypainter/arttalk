@@ -20,6 +20,7 @@
     "http-proxy-middleware": "^2.0.6",
     "next": "^13.3.1",
     "node-audiorecorder": "^3.0.0",
+    "@mediapipe/tasks-vision": "^0.1.0-alpha-12",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-webcam": "^7.0.1",

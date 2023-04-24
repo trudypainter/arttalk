@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "Speech recognition/streaming_audio_feed.js_audio_feed.js"  ],
   "exclude": ["node_modules"]
 }

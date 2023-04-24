@@ -12,15 +12,6 @@ export default async function handler(
 
   await prisma.comment
     .create({
-      //   data: {
-      //     x: x,
-      //     y: 30.2,
-      //     width: 111.0,
-      //     height: 90.9,
-      //     xPercentage: 0.8,
-      //     yPercentage: 0.9,
-      //     body: "teset",
-      //   },
       data: {
         x: x,
         y: y,

@@ -1,22 +1,27 @@
 // CanvasWithCircle.tsx
 import React, { useRef, useState, useEffect } from "react";
 import {
+  Dimensions,
   FIRST_FEEDBACK,
   FeedbackType,
   SECOND_FEEDBACK,
   THIRD_FEEDBACK,
 } from "~/constants/constant";
+import { Hands } from "@mediapipe/hands";
 
 interface CanvasWithCircleProps {
   setFeedback: (feedback: FeedbackType) => void;
   feedback: FeedbackType;
+  setCoordDimensions: (dimensions: Dimensions) => void;
 }
 
 const CanvasWithCircle: React.FC<CanvasWithCircleProps> = ({
   setFeedback,
   feedback,
+  setCoordDimensions,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const [circlePosition, setCirclePosition] = useState<{
     x: number;
     y: number;
@@ -69,6 +74,23 @@ const CanvasWithCircle: React.FC<CanvasWithCircleProps> = ({
       hoverTimeoutRef.current = window.setTimeout(() => {
         if (feedback.title === SECOND_FEEDBACK.title) {
           setFeedback(THIRD_FEEDBACK);
+
+          setCoordDimensions({
+            width: rect.width,
+            height: rect.height,
+            x: x,
+            y: y,
+            xPercentage: x / rect.width,
+            yPercentage: y / rect.height,
+          });
+          console.log({
+            width: rect.width,
+            height: rect.height,
+            x: x,
+            y: y,
+            xPercentage: x / rect.width,
+            yPercentage: y / rect.height,
+          });
         }
         drawCircle(x, y, true);
         setHoverEnabled(false);

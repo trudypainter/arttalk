@@ -11,3 +11,9 @@ To check out database (using prisma + planet scale)
 ```
 npx prisma studio
 ```
+
+If you make changes to the schema, run the following command to update the schema online
+
+```
+npx prisma db push
+```

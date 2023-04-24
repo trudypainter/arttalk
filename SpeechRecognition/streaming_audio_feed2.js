@@ -1,6 +1,6 @@
 const { Writable } = require("stream");
 
-export class AudioFeedBack {
+class AudioFeedBack {
   finalResult = "";
   encoding = "LINEAR16";
   sampleRateHertz = 16000;
@@ -66,7 +66,7 @@ export class AudioFeedBack {
       .on("error", (err) => {
         if (err.code === 11) {
         } else {
-          console.error("API request error " + err);
+          return;
         }
       })
       .on("data", this.speechCallback);
@@ -84,3 +84,6 @@ export class AudioFeedBack {
     }
   };
 }
+let af = new AudioFeedBack();
+af.startRecording();
+process.on("change", () => console.log(af.finalResult));

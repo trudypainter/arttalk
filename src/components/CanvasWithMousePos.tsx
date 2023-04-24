@@ -6,6 +6,7 @@ import {
   SECOND_FEEDBACK,
   THIRD_FEEDBACK,
 } from "~/constants/constant";
+import { Hands } from "@mediapipe/hands";
 
 interface CanvasWithCircleProps {
   setFeedback: (feedback: FeedbackType) => void;
@@ -17,6 +18,7 @@ const CanvasWithCircle: React.FC<CanvasWithCircleProps> = ({
   feedback,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const [circlePosition, setCirclePosition] = useState<{
     x: number;
     y: number;

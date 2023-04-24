@@ -17,3 +17,7 @@ If you make changes to the schema, run the following command to update the schem
 ```
 npx prisma db push
 ```
+
+---
+
+You will need a `.env` file that has a `DATABASE_URL` value. We used [Planet Scale](https://planetscale.com/) for our database.

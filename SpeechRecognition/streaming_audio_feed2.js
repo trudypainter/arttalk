@@ -66,7 +66,7 @@ class AudioFeedBack {
       .on("error", (err) => {
         if (err.code === 11) {
         } else {
-          console.error("API request error " + err);
+          return;
         }
       })
       .on("data", this.speechCallback);
@@ -84,6 +84,6 @@ class AudioFeedBack {
     }
   };
 }
-
 let af = new AudioFeedBack();
+af.startRecording();
 process.on("change", () => console.log(af.finalResult));

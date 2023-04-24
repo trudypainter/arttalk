@@ -1,6 +1,7 @@
 // CanvasWithCircle.tsx
-import React, { useRef, useState, useEffect, MutableRefObject } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
+  Dimensions,
   FIRST_FEEDBACK,
   FeedbackType,
   SECOND_FEEDBACK,
@@ -15,7 +16,8 @@ import Webcam from "react-webcam";
 
 interface CanvasWithGuestureProps {
   setFeedback: (feedback: FeedbackType) => void;
-  feedback: FeedbackType;
+  setCoordDimensions: (dimensions: Dimensions) => void;
+  searching: boolean;
 }
 
 interface Point {
@@ -25,13 +27,14 @@ interface Point {
 
 const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   setFeedback,
-  feedback,
+  setCoordDimensions,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentPosition = useRef<Point | null>(null);
   const holdPosition = useRef<Point | null>(null);
   const holding = useRef<boolean>(false);
   const holdingStart = useRef<number | null>(null);
+  const noPositionStart = useRef<number | null>(null);
   const [dimensions, setDimensions] = useState<{
     width: number;
     height: number;
@@ -65,6 +68,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   const webcamRef = useRef<Webcam>(null);
 
   useEffect(() => {
+    console.log("Rendered");
     void handleStartTracking();
   });
 
@@ -110,13 +114,13 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
       const video = webcamRef.current?.video as HTMLVideoElement;
       if (video && video.videoHeight > 0 && video.videoWidth > 0) {
         const id = requestAnimationFrame(drawMask);
-        /*setAnimationFrameId(id);*/
         const startTimeMs = Date.now();
         const detections = handLandmarker.detectForVideo(video, startTimeMs);
         if (
           detections.landmarks[0] !== undefined &&
           detections.landmarks[0][8] !== undefined
         ) {
+          noPositionStart.current = null;
           const { x, y } = updateRunningAverage(
             prevLandmarks,
             detections.landmarks[0][8],
@@ -128,8 +132,24 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
           if (holdingStart.current) {
             if (Date.now() - holdingStart.current > 1000) {
               drawCircle(x, y, canvas.width, canvas.height, context, true);
+              setFeedback(THIRD_FEEDBACK);
+              setCoordDimensions({
+                width: canvas.width,
+                height: canvas.height,
+                x: x * canvas.width,
+                y: y * canvas.height,
+                xPercentage: x,
+                yPercentage: y,
+              });
               cancelAnimationFrame(id);
             }
+          }
+        } else {
+          if (noPositionStart.current == null) {
+            noPositionStart.current = Date.now();
+          } else if (Date.now() - noPositionStart.current > 3000) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            setFeedback(FIRST_FEEDBACK);
           }
         }
       }
@@ -171,6 +191,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
       holdPosition.current = { x: runningX, y: runningY };
       holding.current = true;
       holdingStart.current = Date.now();
+      setFeedback(SECOND_FEEDBACK);
     }
 
     const x = 1 - runningX;
@@ -200,7 +221,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   };
 
   return (
-    <>
+    <div>
       <canvas
         ref={canvasRef}
         width={dimensions.width}
@@ -208,8 +229,8 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
         style={{ display: "block" }}
       />
       <Webcam ref={webcamRef} style={{ visibility: "hidden" }} />
-    </>
+    </div>
   );
 };
 
-export default CanvasWithGuesture;
+export default React.memo(CanvasWithGuesture);

@@ -51,7 +51,7 @@ const Home: NextPage = () => {
             <div className="absolute left-0 top-0 h-full w-full ">
               <CanvasWithGuesture
                 setFeedback={setFeedback}
-                feedback={feedback}
+                setCoordDimensions={setDimensions}
               />
             </div>
             <img

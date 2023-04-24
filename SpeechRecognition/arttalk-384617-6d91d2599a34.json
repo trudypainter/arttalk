@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "arttalk-384617",
+  "private_key_id": "6d91d2599a34dba028d53081985579ab73425b47",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDWHuc3BSWoOUeO\nprle57IiMWS9RiMeuKX3tqaHX//RELbiQQLc682yms2/L1LNHATuf5AU6m4WkXtn\nIFM68Wl8hHmeuaPhmtkG8GGJl8eliJFjRYtVNJZiiUCcAz1MGryeP5tdigUG3Bxr\nJml84P0khVRkfC9BAcyXSXutN636U4/T1EbqTVYiTRvuNziaK8i4G0SdNSr8IjXd\nEgqGn11RS+luOKYJo3JahwhKDKjZY8Dzi7NDwNuk7iad0av4LooSaqZe5k8MTH4m\n3IYzNfvpwuFySZeLti2WvPT3I6PFLTnG6hFIZqd31tLFhKXTo/6jOrf3WoxEHAAG\nBgU1GxelAgMBAAECggEAAjlOnCBY5HG5L97Ewhrp8Lej8jX48L1o4TUWbwWCOgD7\nGp0jkyPSfm5j1f5/KlOGLEFK6ndc2Vh9eElk/pG5+hRuJvCKpoczMIKX9hPg0PP6\n0+se/Vg5z6AupEWBrM6s8tUk9J3AW5029liZyTWVANIZrvQokXub97OdreOMJ7No\nR/OTsQ3Bq3kQj8nl8/EloJ2BZVwfx8fSn9JW/Rz/iELo/b1uPluFQR4KX5e8qyCa\nc7zY+znNnzxkhkLgntBL45krb2yRsImMJHSV9ieZWRRT04N5kPSgh8CIL6jSb+vV\nehtfMKv2g3x916jGHCnN/1pqQk/JB2kWv4CgLMoM6QKBgQDsHWcPNHrb4NzYQ/CM\nDfPfUrUN+8q3qhqUaqbI6PqvcIOY6Q/hRWXz1+Yv1ZHjPlvVdAz8lU4W4BHhBejG\nh9AguLY+D38VvM0hfLMC+VT36Zapog4J3XM01Sh86NXWiSji0mcIFffxzpylLqAL\nlazNk4kq7iVuwYnwnualXoMDSwKBgQDoJ0+DskTKh55i786rWqknqu2bGbK8Eb2C\n/bcswoGVlaV+KPskIBkIbNQv2Tu9QcrmGrZbYu7QadaYVzHHd4vH6ruKb/9Aapzx\nmZctcnWjNnQWxreC/OtocPIEJP4IINXt62q6czCVRc8dvIWpLzRPd1eu3M+QpiFr\ns5TW6A+KzwKBgQCTTni4pL4tpalCh4hwaFgIsPniIn/DfC2fALbTS37yq1h+spDE\ns1469ixXFYAx7PqwPfnIL4ILhXnCEMS774lqkLKqH1LjBepYhQrNxS48iRAE/uSR\nRQaWJJJg84ZNlT7b2/aJteL9ijByYZdaAuRPUUdXcEIMSlS7uPcenstP5wKBgQCl\ntOGJ1GZL1g/U+O0g3H6fRN+C9Q3iNht6c5UbCt8qIX3WFnRkrdCQdfXjDYEZruuf\n4XNGudBSzSkS5jIu+YK5uTASOa0Nksvhm8sP8oJLdKPaWg9FHTj+/JeTI8B7lsx8\nnaw519zWv9R9mkIhqAMDseDRfOVfj2WNlcpot43YewKBgFRZ2xEDGcxY/6C5W7rn\nMzXVep2s4heFPDR4Yl3VsXdwmEwUQdtgC/BgHcjp5Yg0k5CoYxdGyuWnK13VGInc\n4SmnbvAPFlD9MBqTiSzA0sKo+0hPdzS4cq1pPqbEnFnOUis9ydAO1nISgGrqP4SJ\nAbEru0UfQvpirOQCrVxoXb/l\n-----END PRIVATE KEY-----\n",
+  "client_email": "mascanio@arttalk-384617.iam.gserviceaccount.com",
+  "client_id": "109958213973862397977",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mascanio%40arttalk-384617.iam.gserviceaccount.com"
+}

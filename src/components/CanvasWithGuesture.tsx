@@ -68,6 +68,17 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
     void handleStartTracking();
   });
 
+  const handleLoadWaiting = async () => {
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        if (webcamRef.current?.video?.readyState == 4) {
+          resolve(true);
+          clearInterval(timer);
+        }
+      }, 500);
+    });
+  };
+
   const handleStartTracking = async () => {
     const vision = await FilesetResolver.forVisionTasks(
       "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
@@ -82,6 +93,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
     if (handLandmarker && canvasRef.current) {
       const context = canvasRef.current.getContext("2d");
       if (context) {
+        await handleLoadWaiting();
         void drawHandLandmarks(handLandmarker, context, canvasRef.current);
       }
     }
@@ -96,7 +108,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
 
     function drawMask() {
       const video = webcamRef.current?.video as HTMLVideoElement;
-      if (video) {
+      if (video && video.videoHeight > 0 && video.videoWidth > 0) {
         const id = requestAnimationFrame(drawMask);
         /*setAnimationFrameId(id);*/
         const startTimeMs = Date.now();

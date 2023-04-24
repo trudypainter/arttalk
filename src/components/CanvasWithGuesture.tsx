@@ -17,7 +17,6 @@ import Webcam from "react-webcam";
 interface CanvasWithGuestureProps {
   setFeedback: (feedback: FeedbackType) => void;
   setCoordDimensions: (dimensions: Dimensions) => void;
-  searching: boolean;
 }
 
 interface Point {

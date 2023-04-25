@@ -21,6 +21,13 @@ const Home: NextPage = () => {
   const holdingStart = useRef<number | null>(null);
   const noPositionStart = useRef<number | null>(null);
   const pauseDrawing = useRef(false);
+  const canvasRef = useRef<any>();
+
+  const resetCanvas = async (seconds: number) => {
+    setTimeout(() => {
+      canvasRef.current?.reset();
+    }, seconds * 1000);
+  };
 
   const [commentsAtLocation, setCommentsAtLocation] = useState<Comment | null>(
     null
@@ -28,7 +35,6 @@ const Home: NextPage = () => {
 
   const createComment = async (input: string) => {
     console.log("got here", dimensions);
-    pauseDrawing.current = false;
     if (!dimensions) return;
 
     const comment = {
@@ -51,6 +57,7 @@ const Home: NextPage = () => {
     const data = await res.json();
     console.log("completed request", data);
     setFeedback(COMPLETED_FEEDBACK);
+    void resetCanvas(5);
   };
 
   const getCommentsAtLocation = async (
@@ -99,6 +106,7 @@ const Home: NextPage = () => {
               holdingStart={holdingStart}
               noPositionStart={noPositionStart}
               pauseDrawing={pauseDrawing}
+              ref={canvasRef}
             />
           </div>
           <img

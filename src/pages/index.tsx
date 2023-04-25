@@ -22,6 +22,10 @@ const Home: NextPage = () => {
   const noPositionStart = useRef<number | null>(null);
   const pauseDrawing = useRef(false);
 
+  const [commentsAtLocation, setCommentsAtLocation] = useState<Comment | null>(
+    null
+  );
+
   const createComment = async (input: string) => {
     console.log("got here", dimensions);
     pauseDrawing.current = false;
@@ -49,6 +53,30 @@ const Home: NextPage = () => {
     setFeedback(COMPLETED_FEEDBACK);
   };
 
+  const getCommentsAtLocation = async (
+    xPercentage: number,
+    yPercentage: number
+  ) => {
+    console.log("getting comments", xPercentage, yPercentage);
+
+    const location = {
+      xPercentage: xPercentage,
+      yPercentage: yPercentage,
+    };
+
+    const res = await fetch("/api/getPointsAtLocation", {
+      method: "POST",
+      body: JSON.stringify({
+        location,
+      }),
+    }).then((res) =>
+      res.json().then((data) => {
+        console.log("⭐️completed request for other comments", data);
+        setCommentsAtLocation(data.comments);
+      })
+    );
+  };
+
   return (
     <>
       <Head>
@@ -64,6 +92,7 @@ const Home: NextPage = () => {
               setFeedback={setFeedback}
               setCoordDimensions={setDimensions}
               webcamRef={webcamRef}
+              getCommentsAtLocation={getCommentsAtLocation}
               setIsListening={setIsListening}
               currentPosition={currentPosition}
               holdPosition={holdPosition}
@@ -83,6 +112,7 @@ const Home: NextPage = () => {
           setFeedback={setFeedback}
           createComment={createComment}
           initIsListening={isListening}
+          commentsAtLocation={commentsAtLocation}
         />
 
         <Webcam

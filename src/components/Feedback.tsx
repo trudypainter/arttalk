@@ -11,12 +11,14 @@ import {
 import React from "react";
 import { useState, useEffect } from "react";
 import { create } from "domain";
+import StringCarousel from "./StringCarousel";
 
 type TopFeedbackProps = {
   feedback: FeedbackType;
   setFeedback: (feedback: FeedbackType) => void;
   createComment: (comment: string) => void;
   initIsListening: boolean;
+  commentsAtLocation: any | null;
 };
 
 export default function Feedback({
@@ -24,6 +26,7 @@ export default function Feedback({
   setFeedback,
   createComment,
   initIsListening,
+  commentsAtLocation,
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
@@ -125,13 +128,6 @@ export default function Feedback({
           >
             {LISTENING_SVG}{" "}
           </div>
-          {/* <div
-            className={`${
-              feedback.status == Status.Submitting ? "text-light" : "text-mid"
-            }`}
-          >
-            {SUBMIT_SVG}{" "}
-          </div> */}
         </div>
       </div>
 
@@ -154,7 +150,22 @@ export default function Feedback({
               )}
             </>
           ) : (
-            <>{feedback.description}</>
+            <>
+              {feedback.description}
+              {feedback.status == Status.Talking && commentsAtLocation ? (
+                <>
+                  <div className="pb-4 ">Other people have said...</div>
+                  <StringCarousel
+                    strings={commentsAtLocation.map(
+                      (comment: any) => comment.body
+                    )}
+                    interval={5000}
+                  />
+                </>
+              ) : (
+                ""
+              )}
+            </>
           )}
         </div>
       </div>

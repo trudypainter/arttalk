@@ -113,7 +113,7 @@ export const HOLD_FEEDBACK: FeedbackType = {
 
 export const TALK_FEEDBACK: FeedbackType = {
   status: Status.Talking,
-  description: "Say your comment when you're ready.",
+  description: "Say your comment when you're ready!",
 };
 
 export const LISTENING_FEEDBACK: FeedbackType = {

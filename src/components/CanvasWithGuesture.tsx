@@ -31,6 +31,7 @@ interface CanvasWithGuestureProps {
   holdingStart: MutableRefObject<number | null>;
   noPositionStart: MutableRefObject<number | null>;
   pauseDrawing: MutableRefObject<boolean>;
+  getCommentsAtLocation: (xPercentage: number, yPercentage: number) => void;
 }
 
 const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
@@ -43,6 +44,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   holdingStart,
   noPositionStart,
   pauseDrawing,
+  getCommentsAtLocation,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [dimensions, setDimensions] = useState<{
@@ -141,6 +143,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
             if (holdingStart.current) {
               if (Date.now() - holdingStart.current > 1000) {
                 setIsListening(true);
+                getCommentsAtLocation(x, y);
                 drawCircle(x, y, canvas.width, canvas.height, context, true);
                 setFeedback(TALK_FEEDBACK);
                 setCoordDimensions({
@@ -154,8 +157,6 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
                 pauseDrawing.current = true;
               }
             }
-          } else {
-            console.log("moving");
           }
         } else {
           if (pauseDrawing.current == false) {

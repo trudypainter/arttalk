@@ -5,9 +5,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightgray: "#efefef",
-        midgray: "#cccccc",
-        darkgray: "#525252",
+        light: "#efefef",
+        lightmid: "#949494",
+        mid: "#717171",
+        dark: "#1E1E1E",
 
         lightgreen: "#d1dad8",
         darkgreen: "#4e6e68",

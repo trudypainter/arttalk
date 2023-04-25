@@ -1,20 +1,35 @@
-import { FeedbackType, THIRD_FEEDBACK } from "~/constants/constant";
+import {
+  POINTING_FEEDBACK,
+  FeedbackType,
+  HOLD_FEEDBACK,
+  LISTENING_FEEDBACK,
+  Status,
+  POINTING_SVG,
+  SUBMIT_SVG,
+  LISTENING_SVG,
+} from "~/constants/constant";
 import React from "react";
 import { useState, useEffect } from "react";
+import { create } from "domain";
 
 type TopFeedbackProps = {
   feedback: FeedbackType;
+  setFeedback: (feedback: FeedbackType) => void;
   createComment: (comment: string) => void;
+  initIsListening: boolean;
 };
 
 export default function Feedback({
   feedback,
+  setFeedback,
   createComment,
+  initIsListening,
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const [output, setOutput] = useState("");
-  const [isListening, setIsListening] = useState<boolean>(true);
+  const [outputs, setOutputs] = useState<string[]>([]);
+  const [isListening, setIsListening] = useState<boolean>(false);
+  const [listenedBefore, setListenedBefore] = useState<boolean>(false);
   const [userHasSpoken, setUserHasSpoken] = useState<boolean>(false);
 
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -44,18 +59,40 @@ export default function Feedback({
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
-          setOutput(
-            (prevOutput) => prevOutput + event.results[i][0].transcript
-          );
+          console.log("transcript", event.results[i][0].transcript);
+          setOutputs((prevOutputs) => [
+            ...prevOutputs,
+            event.results[i][0].transcript,
+          ]);
+
+          // Check if there are two inputs in the outputs array and if the second input is "submit"
+          console.log("checking outputs", outputs);
+          if (
+            outputs.length === 1 &&
+            event.results[event.results.length - 1][0].transcript
+              .trim()
+              .toLowerCase() === "correct"
+          ) {
+            const firstOutput = outputs[0]; // Get the first output
+            if (firstOutput) {
+              createComment(firstOutput);
+            }
+          }
+
+          // stop listening after half a second, start again after half a second
+          setTimeout(() => {
+            setIsListening(false);
+            setTimeout(() => {
+              setIsListening(true);
+            }, 500);
+          }, 500);
         }
       }
-
-      silenceTimer = setTimeout(() => {
-        setIsListening(false);
-      }, 2000); // Set the duration of silence to 2 seconds (2000 milliseconds)
     };
 
-    if (isListening) {
+    if (isListening || (initIsListening && !listenedBefore)) {
+      console.log("starting recognition");
+      setListenedBefore(true);
       recognition.start();
       recognition.onend = () => recognition.start();
     } else {
@@ -68,66 +105,63 @@ export default function Feedback({
       recognition.stop();
       recognition.onend = () => {};
     };
-  }, [isListening]);
+  }, [isListening, initIsListening, outputs]);
+
+  useEffect(() => {
+    console.log(feedback);
+  }, [feedback]);
 
   return (
     <>
-      <div className="mb-4 rounded-lg bg-lightgreen p-4 text-darkgreen">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 px-2">{feedback.svg}</div>
-          <div>
-            <div className="text-md font-bold"> {feedback.title}</div>
-            <div className="font-mono text-sm tracking-tighter">
-              {" "}
-              {feedback.description}
-            </div>
+      <div className="absolute top-2 flex  w-full  justify-center ">
+        <div className="flex h-full w-48 items-center justify-between rounded-b-2xl bg-dark px-8 py-4">
+          <div
+            className={`${
+              feedback.status == Status.Pointing ? "text-light" : "text-mid"
+            }`}
+          >
+            {POINTING_SVG}
           </div>
+          <div
+            className={`${
+              feedback.status == Status.Talking ? "text-light" : "text-mid"
+            }`}
+          >
+            {LISTENING_SVG}{" "}
+          </div>
+          {/* <div
+            className={`${
+              feedback.status == Status.Submitting ? "text-light" : "text-mid"
+            }`}
+          >
+            {SUBMIT_SVG}{" "}
+          </div> */}
         </div>
       </div>
-      {feedback.title === THIRD_FEEDBACK.title && (
-        <>
-          <div className="mb-4 rounded-lg bg-lightgray px-8  py-6 font-bold text-darkgray">
-            What have other people said about this spot?
-          </div>
-          <div className="mb-4 rounded-lg bg-lightgray px-8  py-6 font-bold text-darkgray">
-            I like ____ about this spot.
-          </div>
 
-          {/* <input
-            className="mb-4 w-full rounded-lg bg-lightgray px-8 py-6 focus:outline-0"
-            placeholder="Enter comment here"
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-          ></input> */}
-
-          <div className="mb-4 rounded-lg bg-lightgray px-8  py-6  text-darkgray">
-            {output.length > 1 ? (
-              <>
-                {output}
-                <div className="flex w-full justify-end">
-                  <div
-                    className="mt-4 w-fit rounded-lg bg-darkgray px-4 py-2  text-lightgray hover:cursor-pointer"
-                    onClick={() => {
-                      createComment(output);
-                      setSubmitting(true);
-                    }}
-                  >
-                    {submitting ? "Submitting..." : "Submit"}
+      <div className="absolute bottom-2 flex w-full  justify-center ">
+        <div className="  w-fit max-w-[800px] items-center justify-between rounded-t-3xl bg-dark p-8 px-8 font-mono text-sm text-light">
+          {feedback.status == Status.Talking && outputs.length > 0 ? (
+            <>
+              {outputs.length === 1 ? (
+                <div className="">
+                  {" "}
+                  <div className="pb-4 text-lightmid">Your output: </div>
+                  <div>{outputs[0]}</div>
+                  <div className="pt-4 text-lightmid">
+                    Say <span className="text-light">Correct</span> to submit or{" "}
+                    <span className="text-light">Try Again</span> to restart
                   </div>
                 </div>
-              </>
-            ) : (
-              <>
-                {isListening && userHasSpoken
-                  ? "Listening..."
-                  : "Once you start speaking, your comment will appear here."}
-              </>
-            )}
-          </div>
-          <div></div>
-        </>
-      )}
+              ) : (
+                "..."
+              )}
+            </>
+          ) : (
+            <>{feedback.description}</>
+          )}
+        </div>
+      </div>
     </>
   );
 }

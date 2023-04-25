@@ -2,10 +2,11 @@
 import React, { useRef, useState, useEffect, RefObject } from "react";
 import {
   Dimensions,
-  FIRST_FEEDBACK,
+  POINTING_FEEDBACK,
   FeedbackType,
-  SECOND_FEEDBACK,
-  THIRD_FEEDBACK,
+  HOLD_FEEDBACK,
+  LISTENING_FEEDBACK,
+  TALK_FEEDBACK,
 } from "~/constants/constant";
 import {
   HandLandmarker,
@@ -18,6 +19,7 @@ interface CanvasWithGuestureProps {
   setFeedback: (feedback: FeedbackType) => void;
   setCoordDimensions: (dimensions: Dimensions) => void;
   webcamRef: RefObject<Webcam>;
+  setIsListening: (isListening: boolean) => void;
 }
 
 interface Point {
@@ -29,6 +31,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   setFeedback,
   setCoordDimensions,
   webcamRef,
+  setIsListening,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentPosition = useRef<Point | null>(null);
@@ -130,8 +133,9 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
           currentPosition.current = { x, y };
           if (holdingStart.current) {
             if (Date.now() - holdingStart.current > 1000) {
+              setIsListening(true);
               drawCircle(x, y, canvas.width, canvas.height, context, true);
-              setFeedback(THIRD_FEEDBACK);
+              setFeedback(TALK_FEEDBACK);
               setCoordDimensions({
                 width: canvas.width,
                 height: canvas.height,
@@ -148,7 +152,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
             noPositionStart.current = Date.now();
           } else if (Date.now() - noPositionStart.current > 3000) {
             context.clearRect(0, 0, canvas.width, canvas.height);
-            setFeedback(FIRST_FEEDBACK);
+            setFeedback(POINTING_FEEDBACK);
           }
         }
       }
@@ -190,7 +194,7 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
       holdPosition.current = { x: runningX, y: runningY };
       holding.current = true;
       holdingStart.current = Date.now();
-      setFeedback(SECOND_FEEDBACK);
+      setFeedback(HOLD_FEEDBACK);
     }
 
     const x = 1 - runningX;

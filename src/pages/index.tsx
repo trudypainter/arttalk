@@ -3,18 +3,19 @@ import React, { useState, useRef, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Feedback from "~/components/Feedback";
-import { COMPLETED_FEEDBACK, FIRST_FEEDBACK } from "~/constants/constant";
-import CanvasWithCircle from "~/components/CanvasWithMousePos";
+import { COMPLETED_FEEDBACK, POINTING_FEEDBACK } from "~/constants/constant";
 import { Dimensions } from "~/constants/constant";
 import CanvasWithGuesture from "~/components/CanvasWithGuesture";
 import Webcam from "react-webcam";
 
 const Home: NextPage = () => {
-  const [feedback, setFeedback] = useState(FIRST_FEEDBACK);
+  const [feedback, setFeedback] = useState(POINTING_FEEDBACK);
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
   const webcamRef = useRef<Webcam>(null);
+  const [isListening, setIsListening] = useState<boolean>(false);
 
   const createComment = async (input: string) => {
+    console.log("got here", dimensions);
     if (!dimensions) return;
 
     const comment = {
@@ -35,6 +36,7 @@ const Home: NextPage = () => {
       }),
     });
     const data = await res.json();
+    console.log("completed request", data);
     setFeedback(COMPLETED_FEEDBACK);
   };
 
@@ -46,33 +48,29 @@ const Home: NextPage = () => {
         <link rel="icon" href="/fav.ico" />
       </Head>
 
-      <main className="flex w-full  justify-center  space-x-8 pt-12">
-        <div className="max-h-screen w-6/12 ">
-          <div className="text-3xl font-bold">Art Talk</div>
-          <div className="relative border-2 border-black">
-            <div className="absolute left-0 top-0 h-full w-full ">
-              <CanvasWithGuesture
-                setFeedback={setFeedback}
-                setCoordDimensions={setDimensions}
-                webcamRef={webcamRef}
-              />
-            </div>
-            <img
-              className=" m-auto p-8"
-              style={{ height: "calc(100vh - 200px)" }}
-              src="https://nrs.harvard.edu/urn-3:HUAM:76465_dynmc?width=3000&height=3000"
-            ></img>
+      <main className="flex h-screen w-full  justify-center space-x-8  bg-dark ">
+        <div className="relative ">
+          <div className="absolute left-0 top-0 h-full w-full ">
+            <CanvasWithGuesture
+              setFeedback={setFeedback}
+              setCoordDimensions={setDimensions}
+              webcamRef={webcamRef}
+              setIsListening={setIsListening}
+            />
           </div>
-
-          <div>
-            <div className="text-xl">The Road in the Forest</div>
-            <div className="">Hilaire-Germain-Edgar Degas, 1890</div>
-          </div>
+          <img
+            className=" m-auto h-full w-full object-contain p-8"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/1200px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg"
+          ></img>
         </div>
 
-        <div className="w-4/12 max-w-[500px] pt-11">
-          <Feedback feedback={feedback} createComment={createComment} />
-        </div>
+        <Feedback
+          feedback={feedback}
+          setFeedback={setFeedback}
+          createComment={createComment}
+          initIsListening={isListening}
+        />
+
         <Webcam
           ref={webcamRef}
           style={{ visibility: "hidden", position: "absolute" }}

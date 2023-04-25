@@ -80,8 +80,15 @@ export default function Feedback({
             if (firstOutput) {
               createComment(firstOutput);
             }
+          } else if (
+            outputs.length === 1 &&
+            event.results[event.results.length - 1][0].transcript
+              .trim()
+              .toLowerCase() === "try again"
+          ) {
+            setOutputs([]);
+            setIsListening(false);
           }
-
           // stop listening after half a second, start again after half a second
           setTimeout(() => {
             setIsListening(false);

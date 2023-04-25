@@ -1,4 +1,8 @@
-import { FeedbackType, THIRD_FEEDBACK } from "~/constants/constant";
+import {
+  FeedbackType,
+  SECOND_FEEDBACK,
+  THIRD_FEEDBACK,
+} from "~/constants/constant";
 import React from "react";
 import { useState, useEffect } from "react";
 
@@ -14,7 +18,9 @@ export default function Feedback({
   const [inputValue, setInputValue] = useState("");
 
   const [output, setOutput] = useState("");
-  const [isListening, setIsListening] = useState<boolean>(true);
+  const [isListening, setIsListening] = useState<boolean>(
+    feedback.title === THIRD_FEEDBACK.title
+  );
   const [userHasSpoken, setUserHasSpoken] = useState<boolean>(false);
 
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -69,6 +75,10 @@ export default function Feedback({
       recognition.onend = () => {};
     };
   }, [isListening]);
+
+  useEffect(() => {
+    setIsListening(feedback.title === THIRD_FEEDBACK.title);
+  }, [feedback]);
 
   return (
     <>

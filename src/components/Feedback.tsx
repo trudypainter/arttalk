@@ -107,10 +107,6 @@ export default function Feedback({
     };
   }, [isListening, initIsListening, outputs]);
 
-  useEffect(() => {
-    console.log(feedback);
-  }, [feedback]);
-
   return (
     <>
       <div className="absolute top-2 flex  w-full  justify-center ">

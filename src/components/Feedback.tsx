@@ -87,7 +87,6 @@ export default function Feedback({
               .toLowerCase() === "try again"
           ) {
             setOutputs([]);
-            setIsListening(false);
           }
           // stop listening after half a second, start again after half a second
           setTimeout(() => {

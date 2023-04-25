@@ -324,14 +324,17 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       context.clearRect(0, 0, width, height);
       context.beginPath();
       context.arc(x_rel * width, y_rel * height, 50, 0, 2 * Math.PI);
-      context.fillStyle = fill ? "black" : "rgba(0, 0, 0, 0)"; // Transparent fill or black fill
+      context.fillStyle = fill ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0)"; // Transparent fill or black fill
       context.fill();
-      if (!fill) {
-        context.strokeStyle = "black";
+      context.strokeStyle = "black";
+      if (fill) {
+        context.lineWidth = 5;
+        context.setLineDash([]);
+      } else {
         context.lineWidth = 3;
         context.setLineDash([12, 2]); // Dotted border
-        context.stroke();
       }
+      context.stroke();
     };
 
     return (

@@ -7,10 +7,12 @@ import { COMPLETED_FEEDBACK, FIRST_FEEDBACK } from "~/constants/constant";
 import CanvasWithCircle from "~/components/CanvasWithMousePos";
 import { Dimensions } from "~/constants/constant";
 import CanvasWithGuesture from "~/components/CanvasWithGuesture";
+import Webcam from "react-webcam";
 
 const Home: NextPage = () => {
   const [feedback, setFeedback] = useState(FIRST_FEEDBACK);
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
+  const webcamRef = useRef<Webcam>(null);
 
   const createComment = async (input: string) => {
     if (!dimensions) return;
@@ -52,6 +54,7 @@ const Home: NextPage = () => {
               <CanvasWithGuesture
                 setFeedback={setFeedback}
                 setCoordDimensions={setDimensions}
+                webcamRef={webcamRef}
               />
             </div>
             <img
@@ -70,6 +73,10 @@ const Home: NextPage = () => {
         <div className="w-4/12 max-w-[500px] pt-11">
           <Feedback feedback={feedback} createComment={createComment} />
         </div>
+        <Webcam
+          ref={webcamRef}
+          style={{ visibility: "hidden", position: "absolute" }}
+        />
       </main>
     </>
   );

@@ -1,5 +1,5 @@
 // CanvasWithCircle.tsx
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, RefObject } from "react";
 import {
   Dimensions,
   FIRST_FEEDBACK,
@@ -17,6 +17,7 @@ import Webcam from "react-webcam";
 interface CanvasWithGuestureProps {
   setFeedback: (feedback: FeedbackType) => void;
   setCoordDimensions: (dimensions: Dimensions) => void;
+  webcamRef: RefObject<Webcam>;
 }
 
 interface Point {
@@ -27,6 +28,7 @@ interface Point {
 const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   setFeedback,
   setCoordDimensions,
+  webcamRef,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const currentPosition = useRef<Point | null>(null);
@@ -63,8 +65,6 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
       }
     };
   }, []);
-
-  const webcamRef = useRef<Webcam>(null);
 
   useEffect(() => {
     console.log("Rendered");
@@ -220,15 +220,12 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   };
 
   return (
-    <div>
-      <canvas
-        ref={canvasRef}
-        width={dimensions.width}
-        height={dimensions.height}
-        style={{ display: "block" }}
-      />
-      <Webcam ref={webcamRef} style={{ visibility: "hidden" }} />
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={dimensions.width}
+      height={dimensions.height}
+      style={{ display: "block" }}
+    />
   );
 };
 

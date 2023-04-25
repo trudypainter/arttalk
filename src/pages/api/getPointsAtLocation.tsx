@@ -28,8 +28,8 @@ export default async function handler(
           lte: xPercentage + TOLERANCE,
         },
         yPercentage: {
-          gte: xPercentage - TOLERANCE,
-          lte: xPercentage + TOLERANCE,
+          gte: yPercentage - TOLERANCE,
+          lte: yPercentage + TOLERANCE,
         },
       },
     })

@@ -152,7 +152,9 @@ export default function Feedback({
           ) : (
             <>
               {feedback.description}
-              {feedback.status == Status.Talking && commentsAtLocation ? (
+              {feedback.status == Status.Talking &&
+              commentsAtLocation &&
+              commentsAtLocation.length > 0 ? (
                 <>
                   <div className="pb-4 ">Other people have said...</div>
                   <StringCarousel

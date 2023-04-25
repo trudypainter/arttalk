@@ -1,12 +1,18 @@
 // CanvasWithCircle.tsx
-import React, { useRef, useState, useEffect, RefObject } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  RefObject,
+  MutableRefObject,
+} from "react";
 import {
   Dimensions,
   POINTING_FEEDBACK,
   FeedbackType,
   HOLD_FEEDBACK,
-  LISTENING_FEEDBACK,
   TALK_FEEDBACK,
+  Point,
 } from "~/constants/constant";
 import {
   HandLandmarker,
@@ -20,11 +26,11 @@ interface CanvasWithGuestureProps {
   setCoordDimensions: (dimensions: Dimensions) => void;
   webcamRef: RefObject<Webcam>;
   setIsListening: (isListening: boolean) => void;
-}
-
-interface Point {
-  x: number;
-  y: number;
+  currentPosition: MutableRefObject<Point | null>;
+  holdPosition: MutableRefObject<Point | null>;
+  holdingStart: MutableRefObject<number | null>;
+  noPositionStart: MutableRefObject<number | null>;
+  pauseDrawing: MutableRefObject<boolean>;
 }
 
 const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
@@ -32,13 +38,13 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   setCoordDimensions,
   webcamRef,
   setIsListening,
+  currentPosition,
+  holdPosition,
+  holdingStart,
+  noPositionStart,
+  pauseDrawing,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const currentPosition = useRef<Point | null>(null);
-  const holdPosition = useRef<Point | null>(null);
-  const holding = useRef<boolean>(false);
-  const holdingStart = useRef<number | null>(null);
-  const noPositionStart = useRef<number | null>(null);
   const [dimensions, setDimensions] = useState<{
     width: number;
     height: number;
@@ -70,7 +76,6 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log("Rendered");
     void handleStartTracking();
   });
 
@@ -115,44 +120,51 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
     function drawMask() {
       const video = webcamRef.current?.video as HTMLVideoElement;
       if (video && video.videoHeight > 0 && video.videoWidth > 0) {
-        const id = requestAnimationFrame(drawMask);
+        requestAnimationFrame(drawMask);
+
         const startTimeMs = Date.now();
         const detections = handLandmarker.detectForVideo(video, startTimeMs);
         if (
           detections.landmarks[0] !== undefined &&
           detections.landmarks[0][8] !== undefined
         ) {
-          noPositionStart.current = null;
-          const { x, y } = updateRunningAverage(
-            prevLandmarks,
-            detections.landmarks[0][8],
-            3,
-            0.05
-          );
-          drawCircle(x, y, canvas.width, canvas.height, context, false);
-          currentPosition.current = { x, y };
-          if (holdingStart.current) {
-            if (Date.now() - holdingStart.current > 1000) {
-              setIsListening(true);
-              drawCircle(x, y, canvas.width, canvas.height, context, true);
-              setFeedback(TALK_FEEDBACK);
-              setCoordDimensions({
-                width: canvas.width,
-                height: canvas.height,
-                x: x * canvas.width,
-                y: y * canvas.height,
-                xPercentage: x,
-                yPercentage: y,
-              });
-              cancelAnimationFrame(id);
+          if (pauseDrawing.current == false) {
+            noPositionStart.current = null;
+            const { x, y } = updateRunningAverage(
+              prevLandmarks,
+              detections.landmarks[0][8],
+              3,
+              0.05
+            );
+            drawCircle(x, y, canvas.width, canvas.height, context, false);
+            currentPosition.current = { x, y };
+            if (holdingStart.current) {
+              if (Date.now() - holdingStart.current > 1000) {
+                setIsListening(true);
+                drawCircle(x, y, canvas.width, canvas.height, context, true);
+                setFeedback(TALK_FEEDBACK);
+                setCoordDimensions({
+                  width: canvas.width,
+                  height: canvas.height,
+                  x: x * canvas.width,
+                  y: y * canvas.height,
+                  xPercentage: x,
+                  yPercentage: y,
+                });
+                pauseDrawing.current = true;
+              }
             }
+          } else {
+            console.log("moving");
           }
         } else {
-          if (noPositionStart.current == null) {
-            noPositionStart.current = Date.now();
-          } else if (Date.now() - noPositionStart.current > 3000) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            setFeedback(POINTING_FEEDBACK);
+          if (pauseDrawing.current == false) {
+            if (noPositionStart.current == null) {
+              noPositionStart.current = Date.now();
+            } else if (Date.now() - noPositionStart.current > 3000) {
+              context.clearRect(0, 0, canvas.width, canvas.height);
+              setFeedback(POINTING_FEEDBACK);
+            }
           }
         }
       }
@@ -186,13 +198,11 @@ const CanvasWithGuesture: React.FC<CanvasWithGuestureProps> = ({
       );
       if (xDiff > threshold || yDiff > threshold) {
         holdPosition.current = null;
-        holding.current = false;
         holdingStart.current = null;
       }
     }
-    if (holding.current == false) {
+    if (holdingStart.current == null) {
       holdPosition.current = { x: runningX, y: runningY };
-      holding.current = true;
       holdingStart.current = Date.now();
       setFeedback(HOLD_FEEDBACK);
     }

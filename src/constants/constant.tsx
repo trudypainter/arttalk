@@ -3,6 +3,11 @@ export interface FeedbackType {
   description: string;
 }
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
 export interface Dimensions {
   height: number;
   width: number;

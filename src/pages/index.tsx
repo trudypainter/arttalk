@@ -1,9 +1,12 @@
 import { type NextPage } from "next";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import Feedback from "~/components/Feedback";
-import { COMPLETED_FEEDBACK, POINTING_FEEDBACK } from "~/constants/constant";
+import {
+  COMPLETED_FEEDBACK,
+  POINTING_FEEDBACK,
+  Point,
+} from "~/constants/constant";
 import { Dimensions } from "~/constants/constant";
 import CanvasWithGuesture from "~/components/CanvasWithGuesture";
 import Webcam from "react-webcam";
@@ -13,9 +16,15 @@ const Home: NextPage = () => {
   const [dimensions, setDimensions] = useState<Dimensions | null>(null);
   const webcamRef = useRef<Webcam>(null);
   const [isListening, setIsListening] = useState<boolean>(false);
+  const currentPosition = useRef<Point | null>(null);
+  const holdPosition = useRef<Point | null>(null);
+  const holdingStart = useRef<number | null>(null);
+  const noPositionStart = useRef<number | null>(null);
+  const pauseDrawing = useRef(false);
 
   const createComment = async (input: string) => {
     console.log("got here", dimensions);
+    pauseDrawing.current = false;
     if (!dimensions) return;
 
     const comment = {
@@ -56,6 +65,11 @@ const Home: NextPage = () => {
               setCoordDimensions={setDimensions}
               webcamRef={webcamRef}
               setIsListening={setIsListening}
+              currentPosition={currentPosition}
+              holdPosition={holdPosition}
+              holdingStart={holdingStart}
+              noPositionStart={noPositionStart}
+              pauseDrawing={pauseDrawing}
             />
           </div>
           <img

@@ -75,6 +75,26 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       pauseDrawing.current = false;*/
     };
 
+    const softResetCanvas = () => {
+      if (canvasRef.current) {
+        const context = canvasRef.current.getContext("2d");
+        if (context) {
+          context.clearRect(
+            0,
+            0,
+            canvasRef.current.width,
+            canvasRef.current.width
+          );
+        }
+      }
+      setFeedback(POINTING_FEEDBACK);
+      currentPosition.current = null;
+      holdPosition.current = null;
+      holdingStart.current = null;
+      noPositionStart.current = null;
+      pauseDrawing.current = false;
+    };
+
     useImperativeHandle(ref, () => ({
       reset() {
         resetCanvas();
@@ -213,7 +233,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               if (noPositionStart.current == null) {
                 noPositionStart.current = Date.now();
               } else if (Date.now() - noPositionStart.current > 3000) {
-                resetCanvas();
+                softResetCanvas();
               }
             }
           }

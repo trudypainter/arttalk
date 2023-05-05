@@ -98,23 +98,12 @@ const Home: NextPage = () => {
       <main className="flex h-screen w-full  justify-center space-x-8  bg-dark ">
         <div className="relative ">
           <div className="absolute left-0 top-0 z-10 h-full w-full ">
-            <CanvasWithGuesture
-              setFeedback={setFeedback}
-              setCoordDimensions={setDimensions}
-              webcamRef={webcamRef}
-              getCommentsAtLocation={getCommentsAtLocation}
-              setIsListening={setIsListening}
-              currentPosition={currentPosition}
-              holdPosition={holdPosition}
-              holdingStart={holdingStart}
-              noPositionStart={noPositionStart}
-              pauseDrawing={pauseDrawing}
-              ref={canvasRef}
-            />
+            <div className="absolute left-0 top-0 z-20 h-full w-full">
+              <Heatmap />
+            </div>
           </div>
-          <div>{/* z index top */}</div>
           <img
-            className=" m-auto h-full w-full object-contain p-8"
+            className=" m-auto h-full w-full object-contain p-8 grayscale"
             src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg/1200px-A_Sunday_on_La_Grande_Jatte%2C_Georges_Seurat%2C_1884.jpg"
           ></img>
         </div>
@@ -125,11 +114,6 @@ const Home: NextPage = () => {
           createComment={createComment}
           initIsListening={isListening}
           commentsAtLocation={commentsAtLocation}
-        />
-
-        <Webcam
-          ref={webcamRef}
-          style={{ visibility: "hidden", position: "absolute" }}
         />
       </main>
     </>

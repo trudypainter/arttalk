@@ -231,7 +231,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               history = history.slice(-30);
               timestamps = timestamps.slice(-30);
               slopes = slopes.slice(-30);
-              console.log("LEN", slopes.filter((slope) => slope > 0.1).length);
+              console.log("LEN", slopes);
               if (slopes.filter((slope) => slope > 0.1).length >= 2) {
                 softResetCanvas();
                 history.length = 0;

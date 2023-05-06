@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 // CanvasWithCircle.tsx
 import React, { useRef, useEffect } from "react";
 import {
@@ -95,9 +96,9 @@ const Test = () => {
           history.push(pos);
           timestamps.push(startTimeMs);
           const slope =
-            (history[history.length - 1] - history[history.length - 2]) /
-            ((timestamps[timestamps.length - 1] -
-              timestamps[timestamps.length - 2]) /
+            (history[history.length - 1]! - history[history.length - 2]!) /
+            ((timestamps[timestamps.length - 1]! -
+              timestamps[timestamps.length - 2]!) /
               100);
           slopes.push(Math.abs(slope));
           history = history.slice(-30);
@@ -125,7 +126,15 @@ const Test = () => {
     chartRef.current.update();
   };
 
-  const options = {
+  const options: {
+    animation: false;
+    scales: {
+      y: {
+        min: number;
+        max: number;
+      };
+    };
+  } = {
     animation: false,
     scales: {
       y: {

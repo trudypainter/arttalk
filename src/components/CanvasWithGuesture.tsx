@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 // CanvasWithCircle.tsx
 import React, {
   useRef,
@@ -53,6 +54,10 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
     },
     ref
   ) {
+    let history = [0];
+    let timestamps = [0];
+    let slopes = [0];
+
     const resetCanvas = () => {
       window.location.reload();
       /*console.log("RESET");
@@ -173,7 +178,6 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       canvas: HTMLCanvasElement
     ) => {
       const prevLandmarks: Array<NormalizedLandmark> = [];
-      const shakeLandmarks: Array<NormalizedLandmark> = [];
 
       function drawMask() {
         const video = webcamRef.current?.video as HTMLVideoElement;
@@ -214,19 +218,26 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
                 }
               }
             } else {
-              /*if (
-                detectShake(
-                  shakeLandmarks,
-                  detections.landmarks[0][8],
-                  100,
-                  0.2,
-                  0.3,
-                  3
-                )
-              ) {
-                resetCanvas();
-                shakeLandmarks.length = 0;
-              }*/
+              const { x, y } = detections.landmarks[0][8];
+              const pos = (x + y) / 2;
+              history.push(pos);
+              timestamps.push(startTimeMs);
+              const slope =
+                (history[history.length - 1]! - history[history.length - 2]!) /
+                ((timestamps[timestamps.length - 1]! -
+                  timestamps[timestamps.length - 2]!) /
+                  100);
+              slopes.push(Math.abs(slope));
+              history = history.slice(-30);
+              timestamps = timestamps.slice(-30);
+              slopes = slopes.slice(-30);
+              console.log(slopes.filter((slope) => slope > 0.2).length);
+              if (slopes.filter((slope) => slope > 0.2).length >= 2) {
+                softResetCanvas();
+                history.length = 0;
+                timestamps.length = 0;
+                slopes.length = 0;
+              }
             }
           } else {
             if (pauseDrawing.current == false) {
@@ -283,34 +294,35 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
     };
 
     const detectShake = (
-      shakeLandmarks: Array<NormalizedLandmark>,
+      shakeLandmarks: number[],
       newLandmarkPosition: NormalizedLandmark,
+      shakeTimestamps: number[],
+      newTimestamp: number,
+      shakeSlopes: number[],
       window: number,
       threshold: number,
-      range: number,
       count: number
     ): boolean => {
-      shakeLandmarks.push(newLandmarkPosition);
-      if (shakeLandmarks.length > window) {
-        shakeLandmarks.shift();
-      }
+      const { x, y } = newLandmarkPosition;
+      const pos = (x + y) / 2;
 
-      const x = shakeLandmarks.map((point) => point.x);
+      shakeLandmarks.push(pos);
+      shakeTimestamps.push(newTimestamp);
 
-      const minX = Math.min(...x);
-      const maxX = Math.max(...x);
+      const landLen = shakeLandmarks.length;
+      const timeLen = shakeTimestamps.length;
+      const slope =
+        (shakeLandmarks[landLen - 1]! - shakeLandmarks[landLen - 2]!) /
+        ((shakeTimestamps[timeLen - 1]! - shakeTimestamps[timeLen - 2]!) / 100);
+      shakeSlopes.push(Math.abs(slope));
 
-      if (maxX - minX < range) {
-        return false;
-      }
+      const numAboveThreshold = shakeSlopes
+        .slice(-window)
+        .filter((slope) => slope > threshold).length;
 
-      const numNearMin = x.filter(
-        (val) => minX * (1 - threshold) < val && val < minX * (1 + threshold)
-      ).length;
-      const numNearMax = x.filter(
-        (val) => maxX * (1 - threshold) < val && val < maxX * (1 + threshold)
-      ).length;
-      return numNearMin >= count && numNearMax >= count;
+      console.log(shakeLandmarks.length);
+
+      return numAboveThreshold > count;
     };
 
     const drawCircle = (

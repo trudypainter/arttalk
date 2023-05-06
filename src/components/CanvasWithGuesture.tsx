@@ -231,8 +231,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               history = history.slice(-30);
               timestamps = timestamps.slice(-30);
               slopes = slopes.slice(-30);
-              console.log(slopes.filter((slope) => slope > 0.2).length);
-              if (slopes.filter((slope) => slope > 0.2).length >= 2) {
+              if (slopes.filter((slope) => slope > 0.1).length >= 2) {
                 softResetCanvas();
                 history.length = 0;
                 timestamps.length = 0;
@@ -291,38 +290,6 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       const x = 1 - runningX;
       const y = runningY;
       return { x, y };
-    };
-
-    const detectShake = (
-      shakeLandmarks: number[],
-      newLandmarkPosition: NormalizedLandmark,
-      shakeTimestamps: number[],
-      newTimestamp: number,
-      shakeSlopes: number[],
-      window: number,
-      threshold: number,
-      count: number
-    ): boolean => {
-      const { x, y } = newLandmarkPosition;
-      const pos = (x + y) / 2;
-
-      shakeLandmarks.push(pos);
-      shakeTimestamps.push(newTimestamp);
-
-      const landLen = shakeLandmarks.length;
-      const timeLen = shakeTimestamps.length;
-      const slope =
-        (shakeLandmarks[landLen - 1]! - shakeLandmarks[landLen - 2]!) /
-        ((shakeTimestamps[timeLen - 1]! - shakeTimestamps[timeLen - 2]!) / 100);
-      shakeSlopes.push(Math.abs(slope));
-
-      const numAboveThreshold = shakeSlopes
-        .slice(-window)
-        .filter((slope) => slope > threshold).length;
-
-      console.log(shakeLandmarks.length);
-
-      return numAboveThreshold > count;
     };
 
     const drawCircle = (

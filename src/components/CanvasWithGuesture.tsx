@@ -184,7 +184,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
         if (video && video.videoHeight > 0 && video.videoWidth > 0) {
           requestAnimationFrame(drawMask);
 
-          const startTimeMs = Date.now();
+          const startTimeMs = performance.now();
           const detections = handLandmarker.detectForVideo(video, startTimeMs);
           if (
             detections.landmarks[0] !== undefined &&
@@ -201,7 +201,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               drawCircle(x, y, canvas.width, canvas.height, context, false);
               currentPosition.current = { x, y };
               if (holdingStart.current) {
-                if (Date.now() - holdingStart.current > 1000) {
+                if (performance.now() - holdingStart.current > 1000) {
                   setIsListening(true);
                   getCommentsAtLocation(x, y);
                   drawCircle(x, y, canvas.width, canvas.height, context, true);
@@ -231,7 +231,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               history = history.slice(-30);
               timestamps = timestamps.slice(-30);
               slopes = slopes.slice(-30);
-              console.log("LEN", slopes);
+              //console.log("LEN", slopes);
               if (slopes.filter((slope) => slope > 0.1).length >= 2) {
                 softResetCanvas();
                 history.length = 0;
@@ -242,8 +242,8 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
           } else {
             if (pauseDrawing.current == false) {
               if (noPositionStart.current == null) {
-                noPositionStart.current = Date.now();
-              } else if (Date.now() - noPositionStart.current > 3000) {
+                noPositionStart.current = performance.now();
+              } else if (performance.now() - noPositionStart.current > 3000) {
                 softResetCanvas();
               }
             }
@@ -284,7 +284,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       }
       if (holdingStart.current == null) {
         holdPosition.current = { x: runningX, y: runningY };
-        holdingStart.current = Date.now();
+        holdingStart.current = performance.now();
         setFeedback(HOLD_FEEDBACK);
       }
 

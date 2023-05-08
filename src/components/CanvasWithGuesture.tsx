@@ -23,6 +23,7 @@ import {
   NormalizedLandmark,
 } from "@mediapipe/tasks-vision";
 import Webcam from "react-webcam";
+import { AudioFeedback } from "./AudioFeedback";
 
 interface CanvasWithGuestureProps {
   setFeedback: (feedback: FeedbackType) => void;
@@ -36,6 +37,7 @@ interface CanvasWithGuestureProps {
   pauseDrawing: MutableRefObject<boolean>;
   getCommentsAtLocation: (xPercentage: number, yPercentage: number) => void;
   ref: RefObject<any>;
+  audioFeedback: AudioFeedback;
 }
 
 const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
@@ -51,35 +53,16 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
       noPositionStart,
       pauseDrawing,
       getCommentsAtLocation,
+      audioFeedback,
     },
     ref
   ) {
     let history = [0];
     let timestamps = [0];
     let slopes = [0];
-
     const resetCanvas = () => {
       window.location.reload();
-      /*console.log("RESET");
-      if (canvasRef.current) {
-        const context = canvasRef.current.getContext("2d");
-        if (context) {
-          context.clearRect(
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.width
-          );
-        }
-      }
-      setFeedback(POINTING_FEEDBACK);
-      currentPosition.current = null;
-      holdPosition.current = null;
-      holdingStart.current = null;
-      noPositionStart.current = null;
-      pauseDrawing.current = false;*/
     };
-
     const softResetCanvas = () => {
       if (canvasRef.current) {
         const context = canvasRef.current.getContext("2d");
@@ -201,7 +184,10 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
               drawCircle(x, y, canvas.width, canvas.height, context, false);
               currentPosition.current = { x, y };
               if (holdingStart.current) {
-                if (performance.now() - holdingStart.current > 1000) {
+                if (
+                  performance.now() - holdingStart.current > 1000 &&
+                  audioFeedback.transitionEnabled
+                ) {
                   setIsListening(true);
                   getCommentsAtLocation(x, y);
                   drawCircle(x, y, canvas.width, canvas.height, context, true);
@@ -281,7 +267,7 @@ const CanvasWithGuesture = forwardRef<any, CanvasWithGuestureProps>(
           holdingStart.current = null;
         }
       }
-      if (holdingStart.current == null) {
+      if (holdingStart.current == null && audioFeedback.transitionEnabled) {
         holdPosition.current = { x: runningX, y: runningY };
         holdingStart.current = performance.now();
         setFeedback(HOLD_FEEDBACK);

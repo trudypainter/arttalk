@@ -11,6 +11,7 @@ import { Dimensions } from "~/constants/constant";
 import CanvasWithGuesture from "~/components/CanvasWithGuesture";
 import Webcam from "react-webcam";
 import dynamic from "next/dynamic";
+import { AudioFeedback } from "~/components/AudioFeedback";
 
 const Heatmap = dynamic(() => import("../components/Heatmap"), { ssr: false });
 
@@ -25,7 +26,7 @@ const Home: NextPage = () => {
   const noPositionStart = useRef<number | null>(null);
   const pauseDrawing = useRef(false);
   const canvasRef = useRef<any>();
-
+  const audioFeedback = new AudioFeedback(POINTING_FEEDBACK);
   const resetCanvas = async (seconds: number) => {
     setTimeout(() => {
       canvasRef.current?.reset();
@@ -59,7 +60,9 @@ const Home: NextPage = () => {
     });
     const data = await res.json();
     console.log("completed request", data);
+    setCommentsAtLocation(null);
     setFeedback(COMPLETED_FEEDBACK);
+
     void resetCanvas(5);
   };
 
@@ -110,6 +113,7 @@ const Home: NextPage = () => {
               noPositionStart={noPositionStart}
               pauseDrawing={pauseDrawing}
               ref={canvasRef}
+              audioFeedback={audioFeedback}
             />
           </div>
           <div>{/* z index top */}</div>
@@ -125,6 +129,7 @@ const Home: NextPage = () => {
           createComment={createComment}
           initIsListening={isListening}
           commentsAtLocation={commentsAtLocation}
+          audioFeedback={audioFeedback}
         />
 
         <Webcam

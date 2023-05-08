@@ -12,6 +12,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { create } from "domain";
 import StringCarousel from "./StringCarousel";
+import { AudioFeedback } from "./AudioFeedback";
 
 type TopFeedbackProps = {
   feedback: FeedbackType;
@@ -19,6 +20,7 @@ type TopFeedbackProps = {
   createComment: (comment: string) => void;
   initIsListening: boolean;
   commentsAtLocation: any | null;
+  audioFeedback: AudioFeedback;
 };
 
 export default function Feedback({
@@ -27,6 +29,7 @@ export default function Feedback({
   createComment,
   initIsListening,
   commentsAtLocation,
+  audioFeedback,
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
@@ -69,22 +72,24 @@ export default function Feedback({
           ]);
 
           // Check if there are two inputs in the outputs array and if the second input is "submit"
-          console.log("checking outputs", outputs);
           if (
             outputs.length === 1 &&
             event.results[event.results.length - 1][0].transcript
               .trim()
-              .toLowerCase() === "correct"
+              .toLowerCase()
+              .includes("correct")
           ) {
             const firstOutput = outputs[0]; // Get the first output
             if (firstOutput) {
               createComment(firstOutput);
+              setOutputs([]);
             }
           } else if (
             outputs.length === 1 &&
             event.results[event.results.length - 1][0].transcript
               .trim()
-              .toLowerCase() === "try again"
+              .toLowerCase()
+              .includes("try again")
           ) {
             setOutputs([]);
           }
@@ -115,6 +120,14 @@ export default function Feedback({
       recognition.onend = () => {};
     };
   }, [isListening, initIsListening, outputs]);
+
+  useEffect(() => {
+    audioFeedback.setFeedback(feedback);
+    if (!audioFeedback.isFeedbackSpoken) {
+      audioFeedback.speakFeedback();
+      audioFeedback.isFeedbackSpoken = true;
+    }
+  }, [feedback]);
 
   return (
     <>

@@ -61,8 +61,6 @@ const Home: NextPage = () => {
     const data = await res.json();
     console.log("completed request", data);
     setCommentsAtLocation(null);
-    setFeedback(COMPLETED_FEEDBACK);
-
     void resetCanvas(5);
   };
 
@@ -85,7 +83,14 @@ const Home: NextPage = () => {
     }).then((res) =>
       res.json().then((data) => {
         console.log("⭐️completed request for other comments", data);
-        setCommentsAtLocation(data.comments);
+        const sortedComments = data.comments
+          .sort((a: any, b: any) => {
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          })
+          .reverse();
+        setCommentsAtLocation(sortedComments);
       })
     );
   };

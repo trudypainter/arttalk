@@ -7,6 +7,8 @@ import {
   POINTING_SVG,
   SUBMIT_SVG,
   LISTENING_SVG,
+  CONFIRMATION_FEEDBACK,
+  COMPLETED_FEEDBACK,
 } from "~/constants/constant";
 import React from "react";
 import { useState, useEffect } from "react";
@@ -83,6 +85,7 @@ export default function Feedback({
             if (firstOutput) {
               createComment(firstOutput);
               setOutputs([]);
+              setFeedback(COMPLETED_FEEDBACK);
             }
           } else if (
             outputs.length === 1 &&
@@ -92,6 +95,7 @@ export default function Feedback({
               .includes("try again")
           ) {
             setOutputs([]);
+            setFeedback(LISTENING_FEEDBACK);
           }
           // stop listening after half a second, start again after half a second
           setTimeout(() => {
@@ -124,10 +128,36 @@ export default function Feedback({
   useEffect(() => {
     audioFeedback.setFeedback(feedback);
     if (!audioFeedback.isFeedbackSpoken) {
-      audioFeedback.speakFeedback();
+      if (feedback === LISTENING_FEEDBACK) {
+        audioFeedback.speakFeedback(
+          "Other people have said " + commentsAtLocation[0].body + "."
+        );
+      } else if (feedback === CONFIRMATION_FEEDBACK) {
+        audioFeedback.speakFeedback(
+          outputs[0] + ".\n" + "Say correct to submit or try again to restart"
+        );
+      } else {
+        audioFeedback.speakFeedback();
+      }
       audioFeedback.isFeedbackSpoken = true;
     }
   }, [feedback]);
+
+  useEffect(() => {
+    if (feedback.status == Status.Talking && outputs.length > 0) {
+      setFeedback(CONFIRMATION_FEEDBACK);
+    }
+  }, [outputs]);
+
+  useEffect(() => {
+    if (
+      feedback.status == Status.Talking &&
+      commentsAtLocation &&
+      commentsAtLocation.length > 0
+    ) {
+      setFeedback(LISTENING_FEEDBACK);
+    }
+  }, [commentsAtLocation]);
 
   return (
     <>
@@ -152,21 +182,17 @@ export default function Feedback({
 
       <div className="absolute bottom-2 flex w-full  justify-center ">
         <div className="  w-fit max-w-[800px] items-center justify-between rounded-t-3xl bg-dark p-8 px-8 font-mono text-sm text-light">
-          {feedback.status == Status.Talking && outputs.length > 0 ? (
+          {feedback.status == Status.Submitting && outputs.length > 0 ? (
             <>
-              {outputs.length === 1 ? (
-                <div className="">
-                  {" "}
-                  <div className="pb-4 text-lightmid">Your output: </div>
-                  <div>{outputs[0]}</div>
-                  <div className="pt-4 text-lightmid">
-                    Say <span className="text-light">Correct</span> to submit or{" "}
-                    <span className="text-light">Try Again</span> to restart
-                  </div>
+              <div className="">
+                {" "}
+                <div className="pb-4 text-lightmid">Your output: </div>
+                <div>{outputs[0]}</div>
+                <div className="pt-4 text-lightmid">
+                  Say <span className="text-light">Correct</span> to submit or{" "}
+                  <span className="text-light">Try Again</span> to restart
                 </div>
-              ) : (
-                "..."
-              )}
+              </div>
             </>
           ) : (
             <>

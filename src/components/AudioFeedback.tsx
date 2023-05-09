@@ -64,7 +64,9 @@ export class AudioFeedback {
   }
 
   public speakFeedback(text: string | undefined = undefined) {
-    const feedbackDescription = text ? text : this.feedback.description;
+    const feedbackDescription = text
+      ? this.feedback.description + "\n" + text
+      : this.feedback.description;
 
     if (!this.isSpeaking && !this.isFeedbackSpoken) {
       if (!text) {

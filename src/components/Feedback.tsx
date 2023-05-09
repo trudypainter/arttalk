@@ -7,11 +7,14 @@ import {
   POINTING_SVG,
   SUBMIT_SVG,
   LISTENING_SVG,
+  CONFIRMATION_FEEDBACK,
+  COMPLETED_FEEDBACK,
 } from "~/constants/constant";
 import React from "react";
 import { useState, useEffect } from "react";
 import { create } from "domain";
 import StringCarousel from "./StringCarousel";
+import { AudioFeedback } from "./AudioFeedback";
 
 type TopFeedbackProps = {
   feedback: FeedbackType;
@@ -19,6 +22,7 @@ type TopFeedbackProps = {
   createComment: (comment: string) => void;
   initIsListening: boolean;
   commentsAtLocation: any | null;
+  audioFeedback: AudioFeedback;
 };
 
 export default function Feedback({
@@ -27,6 +31,7 @@ export default function Feedback({
   createComment,
   initIsListening,
   commentsAtLocation,
+  audioFeedback,
 }: TopFeedbackProps) {
   const [inputValue, setInputValue] = useState("");
 
@@ -69,24 +74,28 @@ export default function Feedback({
           ]);
 
           // Check if there are two inputs in the outputs array and if the second input is "submit"
-          console.log("checking outputs", outputs);
           if (
             outputs.length === 1 &&
             event.results[event.results.length - 1][0].transcript
               .trim()
-              .toLowerCase() === "correct"
+              .toLowerCase()
+              .includes("correct")
           ) {
             const firstOutput = outputs[0]; // Get the first output
             if (firstOutput) {
               createComment(firstOutput);
+              setOutputs([]);
+              setFeedback(COMPLETED_FEEDBACK);
             }
           } else if (
             outputs.length === 1 &&
             event.results[event.results.length - 1][0].transcript
               .trim()
-              .toLowerCase() === "try again"
+              .toLowerCase()
+              .includes("try again")
           ) {
             setOutputs([]);
+            setFeedback(LISTENING_FEEDBACK);
           }
           // stop listening after half a second, start again after half a second
           setTimeout(() => {
@@ -116,6 +125,40 @@ export default function Feedback({
     };
   }, [isListening, initIsListening, outputs]);
 
+  useEffect(() => {
+    audioFeedback.setFeedback(feedback);
+    if (!audioFeedback.isFeedbackSpoken) {
+      if (feedback === LISTENING_FEEDBACK) {
+        audioFeedback.speakFeedback(
+          "Other people have said " + commentsAtLocation[0].body + "."
+        );
+      } else if (feedback === CONFIRMATION_FEEDBACK) {
+        audioFeedback.speakFeedback(
+          outputs[0] + ".\n" + "Say correct to submit or try again to restart"
+        );
+      } else {
+        audioFeedback.speakFeedback();
+      }
+      audioFeedback.isFeedbackSpoken = true;
+    }
+  }, [feedback]);
+
+  useEffect(() => {
+    if (feedback.status == Status.Talking && outputs.length > 0) {
+      setFeedback(CONFIRMATION_FEEDBACK);
+    }
+  }, [outputs]);
+
+  useEffect(() => {
+    if (
+      feedback.status == Status.Talking &&
+      commentsAtLocation &&
+      commentsAtLocation.length > 0
+    ) {
+      setFeedback(LISTENING_FEEDBACK);
+    }
+  }, [commentsAtLocation]);
+
   return (
     <>
       <div className="absolute top-2 flex  w-full  justify-center ">
@@ -139,21 +182,17 @@ export default function Feedback({
 
       <div className="absolute bottom-2 flex w-full  justify-center ">
         <div className="  w-fit max-w-[800px] items-center justify-between rounded-t-3xl bg-dark p-8 px-8 font-mono text-sm text-light">
-          {feedback.status == Status.Talking && outputs.length > 0 ? (
+          {feedback.status == Status.Submitting && outputs.length > 0 ? (
             <>
-              {outputs.length === 1 ? (
-                <div className="">
-                  {" "}
-                  <div className="pb-4 text-lightmid">Your output: </div>
-                  <div>{outputs[0]}</div>
-                  <div className="pt-4 text-lightmid">
-                    Say <span className="text-light">Correct</span> to submit or{" "}
-                    <span className="text-light">Try Again</span> to restart
-                  </div>
+              <div className="">
+                {" "}
+                <div className="pb-4 text-lightmid">Your output: </div>
+                <div>{outputs[0]}</div>
+                <div className="pt-4 text-lightmid">
+                  Say <span className="text-light">Correct</span> to submit or{" "}
+                  <span className="text-light">Try Again</span> to restart
                 </div>
-              ) : (
-                "..."
-              )}
+              </div>
             </>
           ) : (
             <>

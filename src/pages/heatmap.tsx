@@ -108,13 +108,14 @@ const Home: NextPage = () => {
           ></img>
         </div>
 
-        <Feedback
+        {/* <Feedback
           feedback={feedback}
           setFeedback={setFeedback}
           createComment={createComment}
           initIsListening={isListening}
+          audioFeedback={}
           commentsAtLocation={commentsAtLocation}
-        />
+        /> */}
       </main>
     </>
   );

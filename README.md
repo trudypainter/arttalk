@@ -44,7 +44,9 @@
 ArtTalk is live on the internet! You do not need to run it locally if you do not want to.
 
 [ArtTalk Main Page](https://arttalk.vercel.app/)
+
 [Curator Heatmap](https://arttalk.vercel.app/heatmap)
+
 [Finger Position Graph Page (used to determine algorithm for shake-to-undo)](https://arttalk.vercel.app/test)
 
 Please use on Google Chrome, and make sure camera and microphone access is enabled.

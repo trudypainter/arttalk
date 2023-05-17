@@ -1,3 +1,25 @@
+# Overview
+
+ArtTalk is a web application that allows users to create and view comments on a painting. It is designed to be used in a museum setting, where users can view comments from other visitors and add their own. It is also designed to be used by curators, who can view a heatmap of where comments are located on the painting.
+
+This was a project for the MIT class Intelligent Multimodal User Interfaces (6.8510).
+
+Access ArtTalk online at [https://arttalk.vercel.app/](https://arttalk.vercel.app/).
+
+![ArtTalk in Action](pointing.png)
+
+# Tech Stack
+
+ArtTalk is built using the following technologies:
+
+- [Next.js](https://nextjs.org/) &rarr; React framework for web applications
+- [Tailwind CSS](https://tailwindcss.com/) &rarr; CSS framework for styling
+- [Prisma](https://www.prisma.io/) &rarr; Database ORM
+- [PostgreSQL](https://www.postgresql.org/) &rarr; Database
+- [Google Mediapipe](https://google.github.io/mediapipe/) &rarr; Hand landmark detection and gesture recognition
+- [Vercel](https://vercel.com/) &rarr; Web hosting
+- [Webkit Speech Recognition and Synthesis API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API) &rarr; Speech recognition
+
 # File Structure
 
 - /prisma
@@ -64,3 +86,11 @@ npm run dev
 ```
 
 Please use on Google Chrome, and make sure camera and microphone access is enabled.
+
+# Credits
+
+This project was created by
+
+- [Trudy Painter](https://www.trudy.computer/)
+- [Maria Ascanio](https://www.linkedin.com/in/mariaascanioalino/)
+- [Andrew Stoddard](http://www.apstodd.com/)

@@ -1,8 +1,7 @@
-# Table of Contents
+# File Structure
 
-- /.next
-- /node_modules
 - /prisma
+  - schema.prisma
 - /public
   - /models
     - hand_landmarker.task
@@ -40,15 +39,26 @@
 - tailwind.config.ts
 - tsconfig.json
 
-# Instructions to run code
+# Instructions to view ArtTalk
+
+ArtTalk is live on the internet! You do not need to run it locally if you do not want to.
+
+[ArtTalk Main Page](https://arttalk.vercel.app/)
+[Curator Heatmap](https://arttalk.vercel.app/heatmap)
+[Finger Position Graph Page (used to determine algorithm for shake-to-undo)](https://arttalk.vercel.app/test)
+
+Please use on Google Chrome, and make sure camera and microphone access is enabled.
+
+# Instructions to run code (Created using node v18.12.1 on MacOS)
+
+If you would prefer to run ArtTalk locally, follow these instructions.
+
+First, you need to put the `.env` file in the main directory. Its location is listed in the table of contents.
+This file will be emailed separately, as it is insecure to host on GitHub.
 
 ```
+npm install
 npm run dev
 ```
 
-b) Instructions for setting up and running your code, making careful note of what’s needed
-to get it running on a bare machine (e.g., one with just the appropriate OS). This too is a
-useful skill – it’s quite frustrating to get a program that’s advertised as requiring a certain
-foundation and then discover a few hours into trying to make it work that the author
-forgot to mention something crucial (e.g., it runs in Python 2.7, not 3.5). So think
-carefully about the infrastructure your application needs, and list all of it.
+Please use on Google Chrome, and make sure camera and microphone access is enabled.

@@ -19,26 +19,25 @@
       - createComment.tsx &rarr; API endpoint to add a new comment to the database
       - getAllPoints.tsx &rarr; API endpoint to retrieve all comments from database
       - getPointsAtLocation.tsx &rarr; API endpoint to get all comments from the database near a point
-    - \_app.tsx
-    - heatmap.tsx
-    - index.tsx
-    - test.tsx
+    - \_app.tsx &rarr; Next.js entry point (auto-generated)
+    - heatmap.tsx &rarr; Web entry point for /heatmap
+    - index.tsx &rarr; Web entry point for / (main page)
+    - test.tsx &rarr; Web entry point for /test (finger position graph page)
   - server/
-    - db.ts
+    - db.ts &rarr; Database variable setup
   - styles/
-    - global.css
-- .env
-- .env.example
-- .eslintrc.js
-- .gitignore
-- next.config.mjs
-- package-lock.json
-- package.json
-- postcss.config.cjs
-- prettier.config.cjs
-- README.md
-- tailwind.config.ts
-- tsconfig.json
+    - global.css &rarr; Global stylesheet
+- .env &rarr; Contains DATABASE_URL for connecting to comments database (not available publicly)
+- .eslintrc.js &rarr; ESLint config file
+- .gitignore &rarr; Files to ignore for git
+- next.config.mjs &rarr; Next.js config file
+- package-lock.json &rarr; Dependency files
+- package.json &rarr; Package list
+- postcss.config.cjs &rarr; PostCSS config file
+- prettier.config.cjs &rarr; Prettier (style formatting) config file
+- README.md &rarr; This file
+- tailwind.config.ts &rarr; Tailwind (also style) config file
+- tsconfig.json &rarr; Typescript config file
 
 # Instructions to view ArtTalk
 
